@@ -1,4 +1,4 @@
-**Description**
+## **Description**
 
 Tic-tac-toe is known all over the world. Each country may have its own version of the name, sometimes the rules are different, but the essence of the game remains the same. Below are the main rules that may be familiar to you since childhood.
 
