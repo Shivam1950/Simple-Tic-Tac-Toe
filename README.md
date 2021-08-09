@@ -8,8 +8,8 @@ The players write 'X' and 'O' on a 3x3 field.
 
 The first player that puts 3 X's or 3 O's in a straight line (including diagonals) wins the game.
 
-#### Example
-
+### Example
+'''
 ---------
 |       |
 |       |
@@ -64,3 +64,4 @@ Enter the coordinates: 3 2
 | X X X |
 ---------
 X wins
+'''
