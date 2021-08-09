@@ -1,4 +1,3 @@
-package tictactoe;
 import java.util.*;
 
 public class Main {
@@ -9,27 +8,27 @@ public class Main {
         boolean resX = false;
         boolean resO = false;
         
-		//Check each row
-		for (int i = 0; i < 3; i++) {
-			if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != '_') {
-				if (board[i][0] == 'X') {
-                    resX = true;
-                } else {
-                    resO = true;
-                }
-			}
+	//Check each row
+	for (int i = 0; i < 3; i++) {
+		if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') {
+			if (board[i][0] == 'X') {
+                    		resX = true;
+                	} else {
+                    		resO = true;
+                	}
 		}
+	}
 
-		//Check each column
-		for (int j = 0; j < 3; j++) {
-			if (board[0][j] == board[1][j] && board[1][j] == board[2][j] && board[0][j] != '_') {
-				if (board[0][j] == 'X') {
-                    resX = true;
-                } else {
-                    resO = true;
-                }
-			}
+	//Check each column
+	for (int j = 0; j < 3; j++) {
+		if (board[0][j] == board[1][j] && board[1][j] == board[2][j] && board[0][j] != ' ') {
+			if (board[0][j] == 'X') {
+                    		resX = true;
+                	} else {
+                    		resO = true;
+                	}
 		}
+	}
         
         //checking for both X and O winning
         if (resO == true && resX == true) {
@@ -40,31 +39,16 @@ public class Main {
             return 'X';
         }
 
-		//Check the diagonals
-		if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != '_') {
-			return board[0][0];
-		}
-		if (board[2][0] == board[1][1] && board[1][1] ==  board[0][2] && board[2][0] != '_') {
-			return board[2][0];
-		}
-
-		//Otherwise nobody has not won yet
-		return '_';
+	//Check the diagonals
+	if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') {
+		return board[0][0];
 	}
-    
-    static int[] countXO(char[] cellsArr) { //to count number of X O and _
-        int[] count = new int[3];
-        
-        for (int i = 0; i < cellsArr.length; i++) {
-            if (cellsArr[i] == 'X') {
-                count[0]++;
-            } else if (cellsArr[i] == 'O') {
-                count[1]++;
-            } else {
-                count[2]++;
-            }
-        }
-        return count;
+	if (board[2][0] == board[1][1] && board[1][1] ==  board[0][2] && board[2][0] != ' ') {
+		return board[2][0];
+	}
+
+	//Otherwise nobody has not won yet
+	return '_';
     }
     
     static char[][] board3D(char[] cellsArr) { //making 3D array
@@ -91,33 +75,26 @@ public class Main {
         return cellsArr;
     }
     
-    static String stateRes(char[] cellsArr) { // to analyze the game state
-        int[] count = countXO(cellsArr); 
-        if (Math.abs(count[0] - count[1]) > 1) {
-            return "Impossible";
-        }
-        
-        char[][] board = board3D(cellsArr);
-        
+    static boolean stateRes(char[][] board) { // to analyze the game state
         char whoWon = playerHasWon(board); 
         if (whoWon == '_') {
-            if (count[2] == 0) {
-                return "Draw";
-            } else {
-                return "Game not finished";
-            }
+            return false;
         } else if(whoWon == 'I') {
-            return "Impossible";
+            System.out.println("Impossible");
+            return true;
         } else {
-            return Character.toString(whoWon) + " wins";
+            System.out.println(Character.toString(whoWon) + " wins");
+            return true;
         }
     }
     
-    static char[] interact(char[] cellsArr) { //to interact with the tic tac toe
+    static void interact(char[] cellsArr) { //to interact with the tic tac toe
         int x = 0;
         int y = 0;
+        int k = 0;
         char[][] board = board3D(cellsArr);
-        while (true) {
+        boolean res = false;
+        while (k < 9) {
             System.out.print("Enter the coordinates: ");
             try {
                 x = cin.nextInt();
@@ -128,14 +105,27 @@ public class Main {
             }
             if (x > 3 || x < 1 || y > 3 || y < 1) {
                 System.out.println("Coordinates should be from 1 to 3!");
-            } else if (board[x-1][y-1] != '_') {
+            } else if (board[x-1][y-1] != ' ') {
                 System.out.println("This cell is occupied! Choose another one!");
             } else {
-                board[x-1][y-1] = 'X';
-                break;
+                if (k % 2 == 0) {
+                    board[x-1][y-1] = 'X';
+                } else {
+                    board[x-1][y-1] = 'O';
+                }
+                printRes(to2D(board));
+                if (k > 5) {
+                    res = stateRes(board);
+                    if (res == true) {
+                        break;
+                    }
+                }
+                k++;
             }
         }
-        return to2D(board);
+        if (!res) {
+            System.out.println("Draw");
+        }
     }
     
     static void printRes(char[] cellsArr) { // to print Tic Tac Toe matrix
@@ -153,11 +143,8 @@ public class Main {
     }
     
     public static void main(String[] args) {
-        System.out.print("Enter cells: ");
-        String cells = cin.next();
-        char[] cellsArr = cells.toCharArray();
+        char[] cellsArr = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
         printRes(cellsArr); 
-        //System.out.println(stateRes(cellsArr)); 
-        printRes(interact(cellsArr)); 
+        interact(cellsArr); 
     }
 }
