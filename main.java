@@ -1,8 +1,11 @@
+package tictactoe;
 import java.util.*;
 
 public class Main {
     
-    static char playerHasWon(char[][] board) {
+    static Scanner cin = new Scanner(System.in);
+    
+    static char playerHasWon(char[][] board) { //to see if someone has won and return the winning char
         boolean resX = false;
         boolean resO = false;
         
@@ -28,6 +31,7 @@ public class Main {
 			}
 		}
         
+        //checking for both X and O winning
         if (resO == true && resX == true) {
             return 'I';
         } else if (resO == true) {
@@ -48,7 +52,7 @@ public class Main {
 		return '_';
 	}
     
-    static int[] countXO(char[] cellsArr) {
+    static int[] countXO(char[] cellsArr) { //to count number of X O and _
         int[] count = new int[3];
         
         for (int i = 0; i < cellsArr.length; i++) {
@@ -63,15 +67,7 @@ public class Main {
         return count;
     }
     
-    static String stateRes(String cells) {
-        char[] cellsArr = cells.toCharArray();
-        
-        int[] count = countXO(cellsArr); //to count number of X and O  
-        if (Math.abs(count[0] - count[1]) > 1) {
-            return "Impossible";
-        }
-        
-        //making a 3D array
+    static char[][] board3D(char[] cellsArr) { //making 3D array
         char[][] board = new char[3][3];
         int k = 0;
         for (int i = 0; i < 3; i++) {
@@ -80,8 +76,30 @@ public class Main {
                 k++;
             }
         }
+        return board;
+    }
+    
+    static char[] to2D(char[][] board) { //to 2D array
+        char[] cellsArr = new char[9];
+        int k = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellsArr[k] = board[i][j];
+                k++;
+            }
+        }
+        return cellsArr;
+    }
+    
+    static String stateRes(char[] cellsArr) { // to analyze the game state
+        int[] count = countXO(cellsArr); 
+        if (Math.abs(count[0] - count[1]) > 1) {
+            return "Impossible";
+        }
         
-        char whoWon = playerHasWon(board); //to see if someone has won and return the winning char
+        char[][] board = board3D(cellsArr);
+        
+        char whoWon = playerHasWon(board); 
         if (whoWon == '_') {
             if (count[2] == 0) {
                 return "Draw";
@@ -95,8 +113,32 @@ public class Main {
         }
     }
     
-    static void printRes(String cells) {
-        char[] cellsArr = cells.toCharArray();
+    static char[] interact(char[] cellsArr) { //to interact with the tic tac toe
+        int x = 0;
+        int y = 0;
+        char[][] board = board3D(cellsArr);
+        while (true) {
+            System.out.print("Enter the coordinates: ");
+            try {
+                x = cin.nextInt();
+                y = cin.nextInt();
+            } catch (Exception e) {
+                System.out.println("You should enter numbers!");
+                continue;
+            }
+            if (x > 3 || x < 1 || y > 3 || y < 1) {
+                System.out.println("Coordinates should be from 1 to 3!");
+            } else if (board[x-1][y-1] != '_') {
+                System.out.println("This cell is occupied! Choose another one!");
+            } else {
+                board[x-1][y-1] = 'X';
+                break;
+            }
+        }
+        return to2D(board);
+    }
+    
+    static void printRes(char[] cellsArr) { // to print Tic Tac Toe matrix
         System.out.println("---------");
         int k = 0;
         for (int i = 0; i < 3; i++) {
@@ -111,10 +153,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-        Scanner cin = new Scanner(System.in);
         System.out.print("Enter cells: ");
         String cells = cin.next();
-        printRes(cells); // to print Tic Tac Toe Table
-        System.out.println(stateRes(cells)); // to analyze the game state
+        char[] cellsArr = cells.toCharArray();
+        printRes(cellsArr); 
+        //System.out.println(stateRes(cellsArr)); 
+        printRes(interact(cellsArr)); 
     }
 }
